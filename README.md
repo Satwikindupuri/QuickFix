@@ -1,222 +1,256 @@
-QuickFix – Local Services Finder App
+# QuickFix — Local Services Finder
 
-A location-aware service marketplace where users can discover electricians, plumbers, decorators, and other providers near their city.
-Providers can register, manage their services, and get discovered by customers.
+A location-aware, city-based service marketplace where customers discover local service providers (electricians, plumbers, decorators, beauty, events, and more) and providers can register and manage their service listings.
 
-🌟 Overview
+- Built with: React + TypeScript + TailwindCSS
+- Backend: Firebase (Firestore + Authentication)
 
-QuickFix is a lightweight, city-based service discovery platform built using React + Firebase.
-Users can:
+---
 
-Detect their location
+Table of contents
+- [Overview](#overview)
+- [Key Features](#key-features)
+  - [User Features](#user-features)
+  - [Provider Features](#provider-features)
+  - [Location System](#location-system)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Install](#install)
+  - [Environment Variables](#environment-variables)
+  - [Run (development)](#run-development)
+- [Firebase / Firestore](#firebase--firestore)
+  - [Collections & Schema](#collections--schema)
+  - [Location filtering / querying](#location-filtering--querying)
+  - [Security & Rules (notes)](#security--rules-notes)
+- [Screenshots (with image numbers)](#screenshots-with-image-numbers)
+- [Known Limitations](#known-limitations)
+- [Roadmap / Future Enhancements](#roadmap--future-enhancements)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
 
-Browse categories
+---
 
-View local service providers filtered by city
+## Overview
 
-Call providers directly
+QuickFix helps users find service providers near them by city and category. Users can detect their location (GPS or manual), browse categories, view provider details, and contact providers directly. Providers can sign up, add multiple listings, update and remove listings, and manage them from the "My Services" view.
 
-Sign up and manage their own service listings
+---
 
-Providers can:
+## Key Features
 
-Register as a service provider
+### User Features
+- Location detection (GPS + manual)
+- Browse categorized services (Electrician, Plumber, Beauty, Events, etc.)
+- Search services by city
+- View provider details and call directly
+- Auth-guarded provider interactions where required
 
-Add multiple services
+### Provider Features
+- Provider registration (detailed form)
+- Add unlimited service listings with details and images
+- Edit and delete service listings
+- Manage all listings in "My Services"
+- Listings by owner are filtered out from general discovery
 
-Edit or delete existing services
+### Location System
+- Persistent LocationContext stored in localStorage
+- Normalized city comparison (city_lc lowercased)
+- Optional lat/lng coordinates for smarter filtering and mapping
+- Category and search pages auto-filter by selected/detected city
 
-View all their listings in My Services
+---
 
-✨ Features
-User Features
+## Tech Stack
 
-Location detection (GPS + manual)
+- Frontend: React + TypeScript
+- Styling: Tailwind CSS
+- State: React Context API (AuthContext, LocationContext)
+- Backend: Firebase Firestore
+- Auth: Firebase Authentication
+- Geocoding: Browser Geolocation API + OpenStreetMap reverse geocoding
+- Icons: lucide-react
 
-Browse categorized services (Electrician, Plumber, Beauty, Events, etc.)
+---
 
-Search services by city
+## Project Structure
 
-View verified provider details
-
-Direct call option
-
-Auth-guarded browsing (login required)
-
-Provider Features
-
-Provider registration with detailed form
-
-Add unlimited service listings
-
-Edit, delete, and manage services in My Services
-
-Provider-filtered results (providers cannot see their own listings)
-
-Location System
-
-Persistent LocationContext (saved in LocalStorage)
-
-Normalized city comparison (case-insensitive)
-
-Automatic lat/lng detection for smarter filtering
-
-Category and search pages auto-filter based on detected location
-
-Security & Data Rules
-
-Users must be authenticated before accessing key features
-
-Providers cannot see their own listings anywhere except My Services
-
-🛠 Tech Stack
-Area	Technology
-Frontend	React + TypeScript + Tailwind CSS
-Backend	Firebase Firestore
-Auth	Firebase Authentication
-State	React Context API + LocationContext
-Geolocation	Browser Geolocation API + OpenStreetMap Reverse Geocoding
-Icons	lucide-react
-📂 Project Structure
 src/
-│
-├── components/
-│   ├── Navbar.tsx
-│   ├── CategoryCard.tsx
-│   └── ...
-│
-├── contexts/
-│   ├── AuthContext.tsx
-│   ├── LocationContext.tsx
-│   └── ...
-│
-├── pages/
-│   ├── Home.tsx
-│   ├── Login.tsx
-│   ├── ProviderRegistration.tsx
-│   ├── CategoryListing.tsx
-│   ├── ProviderDetail.tsx
-│   ├── SearchResults.tsx
-│   ├── MyProviders.tsx
-│
-├── lib/
-│   ├── firebase.ts
-│   ├── geo.ts
-│
-├── utils/
-│   └── filterSelf.ts
-│
-└── App.tsx
+- components/ — reusable UI components (Navbar, CategoryCard, ProviderCard, etc.)
+- contexts/ — AuthContext.tsx, LocationContext.tsx
+- pages/ — Home, Login, ProviderRegistration, CategoryListing, ProviderDetail, SearchResults, MyServices
+- lib/ — firebase.ts, geo.ts (helpers, sdk initialization)
+- utils/ — utility functions (filterSelf.ts, normalizeCity.ts)
+- App.tsx — route and app setup
 
-🔧 Setup Instructions
-1. Clone the project
-git clone https://github.com/yourusername/quickfix.git
+---
+
+## Getting Started
+
+### Prerequisites
+- Node.js (14+ recommended)
+- npm or yarn
+- Firebase project
+
+### Install
+```bash
+git clone https://github.com/Satwikindupuri/quickfix.git
 cd quickfix
-
-2. Install dependencies
 npm install
+# or
+# yarn
+```
 
-3. Configure Firebase
+### Environment Variables
+Create a `.env` (or `.env.local`) file in project root with your Firebase config (Vite uses VITE_ prefix):
 
-Create a .env file:
-
-VITE_FIREBASE_API_KEY=your-key
-VITE_FIREBASE_AUTH_DOMAIN=your-domain
+```env
+VITE_FIREBASE_API_KEY=your-api-key
+VITE_FIREBASE_AUTH_DOMAIN=your-auth-domain
 VITE_FIREBASE_PROJECT_ID=your-project-id
-VITE_FIREBASE_STORAGE_BUCKET=your-bucket
-VITE_FIREBASE_MESSAGING_SENDER_ID=sender-id
+VITE_FIREBASE_STORAGE_BUCKET=your-storage-bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=your-messaging-sender-id
 VITE_FIREBASE_APP_ID=your-app-id
+```
 
-4. Start Development Server
+> Keep these values secure and do not commit them to the repository.
+
+### Run (development)
+```bash
 npm run dev
+# or
+# yarn dev
+```
 
-🔥 Firestore Collections Used
-providers
+Build for production:
+```bash
+npm run build
+```
 
-Stores each service listing.
+---
 
-Field	Type	Description
-uid	string	Owner user id
-name	string	Provider person name
-firm_name	string	Business name
-category	string	Category selected
-city	string	City name
-city_lc	string	Normalized city name (lowercase)
-lat, lng	numbers	Geo coordinates
-price	string	Price range
-experience_years	number	Experience
-description	string	Service description
-created_at	timestamp	Created time
+## Firebase / Firestore
 
-📍 How Location Filtering Works
+### Collections & Schema
 
-User sets location (manual or GPS).
+Collection: `providers`
 
-LocationContext saves:
+Each document represents a single service listing. Example fields:
 
-city
+- uid: string — owner user id
+- name: string — provider name
+- firm_name: string — business name
+- category: string — chosen category (e.g., "Electrician")
+- city: string — city display name (e.g., "Vijayawada")
+- city_lc: string — normalized city (lowercase) for matching
+- lat: number — latitude (optional)
+- lng: number — longitude (optional)
+- price: string — price or price range
+- experience_years: number — years of experience
+- description: string — service description
+- phone: string — contact number
+- images: array<string> — storage URLs (optional)
+- created_at: timestamp — created time
+- updated_at: timestamp — last update time
 
-city_lc (normalized for easy matching)
+(Adjust fields as needed in your application code.)
 
-lat
+### Location filtering / querying
 
-lng
+Category and search pages filter providers by the normalized city field:
 
-Category pages (/category/:name) filter using:
+Example Firestore query (pseudocode / SDK):
 
-Firestore where("city_lc", "==", location.city_lc)
+```ts
+const q = query(
+  collection(db, "providers"),
+  where("city_lc", "==", location.city_lc),
+  where("category", "==", category) // optional if category page
+);
+```
 
-SearchResults also uses the same filtering logic.
+Provider listings created by the current user should be excluded in discover pages. Note that Firestore's query operators may impose constraints; a common approach is to filter UID client-side if needed.
 
-Provider listings created by the same user are automatically filtered out.
+### Security & Rules (notes)
+- Require authentication for create/update/delete provider operations.
+- Only allow users to edit/delete their own provider documents (based on uid).
+- Validate field types and sizes where appropriate.
+- Use Firestore rules to avoid unauthorized writes/reads.
 
-🧪 Known Limitations
+---
 
-Firestore composite indexes must be created when required.
-(Firebase console links will appear in browser logs.)
+## Screenshots (with image numbers)
 
-Location detection depends on browser permission.
+Below are the primary UI screenshots and their corresponding image numbers you provided. Add the following image files to the repository under `screenshots/` with the filenames shown if you want them embedded in the README.
 
-City names must be consistent ("Vijayawada" ≠ "vijaywada" unless stored normalized).
+Image number mapping:
+- Image 1 — screenshots/home.png — Home landing page (hero + category cards)
+- Image 2 — screenshots/categories.png — Category grid / Browse by Category
+- Image 3 — screenshots/provider-details.png — Provider registration / Provider detail form
+- Image 4 — screenshots/my-services.png — My Services (provider dashboard)
 
-🚀 Future Enhancements
+Embed examples (place images in `screenshots/` folder):
 
-Offline-first mode (browse cached services)
+![1 — Home](screenshots/home.png)
+*Image 1 — Home landing page (hero + category cards)*
 
-Push notifications for provider updates
+![2 — Categories](screenshots/categories.png)
+*Image 2 — Browse by Category grid*
 
-Chat between user & provider
+![3 — Provider Registration / Details](screenshots/provider-details.png)
+*Image 3 — Register as Service Provider / Provider detail form*
 
-In-app booking & scheduling
+![4 — My Services](screenshots/my-services.png)
+*Image 4 — My Services (provider dashboard with edit/delete actions)*
 
-Provider verification badge with documents
+If you prefer to host images elsewhere (GitHub attachments, CDN), replace the paths above with the hosted URLs.
 
-Multi-language UI support
+---
 
-AI-based provider recommendation
+## Known Limitations
 
-📸 Screenshots
+- Location detection depends on browser permissions and accuracy.
+- City normalization relies on consistent city names (store lowercased city in city_lc).
+- Firestore composite indexes are required for some complex queries — console will show links to create them.
+- Filtering out the current user's listings while using server-side filters can require careful query design due to Firestore limitations (consider client-side filter as fallback).
 
-Add screenshots here
+---
 
-/screenshots
-    home.png
-    <img width="1823" height="907" alt="image" src="https://github.com/user-attachments/assets/3439b49f-d8fb-4890-a5c1-002a64b45e55" />
+## Roadmap / Future Enhancements
 
-    categories.png
-    <img width="1600" height="749" alt="image" src="https://github.com/user-attachments/assets/74a6103c-064f-43ca-83bb-f6d9ee23e95b" />
+- Offline-first browsing / local cache
+- Push notifications for new or updated listings
+- In-app chat and booking/scheduling
+- Provider verification with document upload flow
+- Multi-language UI support
+- AI-based recommendations and ranking
 
-    provider-details.png
-    <img width="639" height="905" alt="image" src="https://github.com/user-attachments/assets/17a69550-3951-4e5f-bacb-7939443859f5" />
+---
 
-    my-services.png
-    <img width="1283" height="592" alt="image" src="https://github.com/user-attachments/assets/445c039b-a701-4d94-a81b-dad42792e065" />
+## Contributing
 
-🤝 Contribution
+Contributions are welcome!
 
-Pull requests are welcome.
-For major changes, open an issue first to discuss what you would like to change.
+- Open an issue to discuss major changes.
+- Fork the repo and create a feature branch:
+  ```bash
+  git checkout -b feat/your-feature
+  ```
+- Make changes, add tests if applicable, and open a pull request.
 
-📄 License
+Please follow code style (TypeScript typings, React best practices, and Tailwind conventions).
 
-MIT License.
+---
+
+## License
+
+MIT License — see LICENSE file.
+
+---
+
+## Contact
+
+Maintainer: Satwik Indupuri  
+- GitHub: https://github.com/Satwikindupuri
