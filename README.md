@@ -1,130 +1,222 @@
-# HelpHub - Local Services Finder
+QuickFix – Local Services Finder App
 
-A complete MVP web application for finding and connecting with local service providers.
+A location-aware service marketplace where users can discover electricians, plumbers, decorators, and other providers near their city.
+Providers can register, manage their services, and get discovered by customers.
 
-## Features
+🌟 Overview
 
-- User authentication (email/password)
-- Two user roles: Service Seeker and Service Provider
-- Browse services by category
-- Search providers by city
-- Provider registration with detailed profiles
-- Direct contact via phone calls
-- 12 service categories: Electrician, Plumber, Appliances, Decoration, Packer & Movers, Beauty, Food, Education, Mechanical, Events, PG/Hostel, Loans
+QuickFix is a lightweight, city-based service discovery platform built using React + Firebase.
+Users can:
 
-## Tech Stack
+Detect their location
 
-- **Frontend**: React + Vite + TypeScript
-- **Styling**: Tailwind CSS
-- **Database**: Supabase (PostgreSQL)
-- **Authentication**: Supabase Auth
-- **Icons**: Lucide React
+Browse categories
 
-## Getting Started
+View local service providers filtered by city
 
-### Prerequisites
+Call providers directly
 
-- Node.js (v16 or higher)
-- npm or yarn
+Sign up and manage their own service listings
 
-### Installation
+Providers can:
 
-1. Install dependencies:
-```bash
-npm install
-```
+Register as a service provider
 
-2. Environment variables are already configured in `.env`
+Add multiple services
 
-3. Run the development server:
-```bash
-npm run dev
-```
+Edit or delete existing services
 
-4. Open your browser and navigate to the local development URL (typically `http://localhost:5173`)
+View all their listings in My Services
 
-## Usage Guide
+✨ Features
+User Features
 
-### For Service Seekers
+Location detection (GPS + manual)
 
-1. Visit the homepage
-2. Enter your city in the search bar
-3. Click on a service category (e.g., Electrician, Plumber)
-4. Browse available providers
-5. Click on a provider to view full details
-6. Click "Call Now" to contact them directly
+Browse categorized services (Electrician, Plumber, Beauty, Events, etc.)
 
-### For Service Providers
+Search services by city
 
-1. Click "Sign In" in the navigation bar
-2. Create an account with email and password
-3. After signing up, select "Become a Provider"
-4. Fill out the registration form with:
-   - Your name
-   - Firm name
-   - Service category
-   - City
-   - Phone number
-   - Years of experience
-   - Service description
-   - Price range
-5. Submit to list your services
+View verified provider details
 
-## Database Schema
+Direct call option
 
-The app uses a single `providers` table with the following structure:
+Auth-guarded browsing (login required)
 
-- `id`: Unique identifier
-- `uid`: User ID (links to authenticated user)
-- `name`: Provider's name
-- `firm_name`: Business name
-- `category`: Service category
-- `city`: Operating city
-- `phone`: Contact number
-- `description`: Service details
-- `experience_years`: Years of experience
-- `price`: Price range
-- `created_at`: Registration timestamp
-- `updated_at`: Last update timestamp
+Provider Features
 
-## Build for Production
+Provider registration with detailed form
 
-```bash
-npm run build
-```
+Add unlimited service listings
 
-The built files will be in the `dist` directory.
+Edit, delete, and manage services in My Services
 
-## Project Structure
+Provider-filtered results (providers cannot see their own listings)
 
-```
+Location System
+
+Persistent LocationContext (saved in LocalStorage)
+
+Normalized city comparison (case-insensitive)
+
+Automatic lat/lng detection for smarter filtering
+
+Category and search pages auto-filter based on detected location
+
+Security & Data Rules
+
+Users must be authenticated before accessing key features
+
+Providers cannot see their own listings anywhere except My Services
+
+🛠 Tech Stack
+Area	Technology
+Frontend	React + TypeScript + Tailwind CSS
+Backend	Firebase Firestore
+Auth	Firebase Authentication
+State	React Context API + LocationContext
+Geolocation	Browser Geolocation API + OpenStreetMap Reverse Geocoding
+Icons	lucide-react
+📂 Project Structure
 src/
-├── components/       # Reusable components (Navbar)
-├── contexts/        # React contexts (AuthContext)
-├── lib/            # Utilities (Supabase client)
-├── pages/          # Page components
+│
+├── components/
+│   ├── Navbar.tsx
+│   ├── CategoryCard.tsx
+│   └── ...
+│
+├── contexts/
+│   ├── AuthContext.tsx
+│   ├── LocationContext.tsx
+│   └── ...
+│
+├── pages/
 │   ├── Home.tsx
 │   ├── Login.tsx
-│   ├── RoleSelection.tsx
 │   ├── ProviderRegistration.tsx
 │   ├── CategoryListing.tsx
-│   └── ProviderDetail.tsx
-├── App.tsx         # Main app with routing
-└── main.tsx        # Entry point
-```
+│   ├── ProviderDetail.tsx
+│   ├── SearchResults.tsx
+│   ├── MyProviders.tsx
+│
+├── lib/
+│   ├── firebase.ts
+│   ├── geo.ts
+│
+├── utils/
+│   └── filterSelf.ts
+│
+└── App.tsx
 
-## Routes
+🔧 Setup Instructions
+1. Clone the project
+git clone https://github.com/yourusername/quickfix.git
+cd quickfix
 
-- `/` - Home page with categories
-- `/login` - Authentication page
-- `/role` - Role selection (after signup)
-- `/register/provider` - Provider registration form
-- `/category/:category` - List of providers by category
-- `/provider/:id` - Provider detail page
+2. Install dependencies
+npm install
 
-## Security Features
+3. Configure Firebase
 
-- Row Level Security (RLS) enabled on database
-- Users can only edit their own provider profiles
-- Anyone can view provider listings
-- Authentication required for provider registration
+Create a .env file:
+
+VITE_FIREBASE_API_KEY=your-key
+VITE_FIREBASE_AUTH_DOMAIN=your-domain
+VITE_FIREBASE_PROJECT_ID=your-project-id
+VITE_FIREBASE_STORAGE_BUCKET=your-bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=sender-id
+VITE_FIREBASE_APP_ID=your-app-id
+
+4. Start Development Server
+npm run dev
+
+🔥 Firestore Collections Used
+providers
+
+Stores each service listing.
+
+Field	Type	Description
+uid	string	Owner user id
+name	string	Provider person name
+firm_name	string	Business name
+category	string	Category selected
+city	string	City name
+city_lc	string	Normalized city name (lowercase)
+lat, lng	numbers	Geo coordinates
+price	string	Price range
+experience_years	number	Experience
+description	string	Service description
+created_at	timestamp	Created time
+
+📍 How Location Filtering Works
+
+User sets location (manual or GPS).
+
+LocationContext saves:
+
+city
+
+city_lc (normalized for easy matching)
+
+lat
+
+lng
+
+Category pages (/category/:name) filter using:
+
+Firestore where("city_lc", "==", location.city_lc)
+
+SearchResults also uses the same filtering logic.
+
+Provider listings created by the same user are automatically filtered out.
+
+🧪 Known Limitations
+
+Firestore composite indexes must be created when required.
+(Firebase console links will appear in browser logs.)
+
+Location detection depends on browser permission.
+
+City names must be consistent ("Vijayawada" ≠ "vijaywada" unless stored normalized).
+
+🚀 Future Enhancements
+
+Offline-first mode (browse cached services)
+
+Push notifications for provider updates
+
+Chat between user & provider
+
+In-app booking & scheduling
+
+Provider verification badge with documents
+
+Multi-language UI support
+
+AI-based provider recommendation
+
+📸 Screenshots
+
+Add screenshots here
+
+/screenshots
+    home.png
+    <img width="1823" height="907" alt="image" src="https://github.com/user-attachments/assets/3439b49f-d8fb-4890-a5c1-002a64b45e55" />
+
+    categories.png
+    <img width="1600" height="749" alt="image" src="https://github.com/user-attachments/assets/74a6103c-064f-43ca-83bb-f6d9ee23e95b" />
+
+    provider-details.png
+    <img width="639" height="905" alt="image" src="https://github.com/user-attachments/assets/17a69550-3951-4e5f-bacb-7939443859f5" />
+
+    my-services.png
+    <img width="1283" height="592" alt="image" src="https://github.com/user-attachments/assets/445c039b-a701-4d94-a81b-dad42792e065" />
+
+🤝 Contribution
+
+Pull requests are welcome.
+For major changes, open an issue first to discuss what you would like to change.
+
+📄 License
+
+MIT License.
